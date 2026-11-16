@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+
+  posts Post[] // one user -> many posts
+  feeds Feed[] // many-to-many with Feed
+}
+
+enum PostStatus {
+  PENDING  // presigned URL issued, upload not yet confirmed
+  UPLOADED // browser confirmed the S3 upload completed
+  FAILED
+}
+
+model Post {
+  id     Int        @id @default(autoincrement())
+  key    String     @unique // S3 object key, assigned when the presigned URL is issued
+  url    String?               // final S3 object URL, set once upload is confirmed
+  status PostStatus @default(PENDING)
+
+  postedAt DateTime @default(now())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  feeds Feed[] // many-to-many with Feed
+
+  @@index([userId])
+}
+
+model Feed {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  users User[] // many-to-many with User
+  posts Post[] // many-to-many with Post
+}

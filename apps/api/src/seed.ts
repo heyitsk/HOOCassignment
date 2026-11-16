@@ -1,0 +1,17 @@
+import { prisma } from "./config/db";
+
+async function main() {
+  const user = await prisma.user.upsert({
+    where: { email: "test@example.com" },
+    update: {},
+    create: { email: "test@example.com", name: "Test User" },
+  });
+  console.log("Seeded user:", user);
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => prisma.$disconnect());

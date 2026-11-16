@@ -1,0 +1,22 @@
+{
+  "name": "projectassignment",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun --filter '*' dev",
+    "dev:web": "bun --filter web dev",
+    "dev:api": "bun --filter api dev",
+    "build": "bun --filter '*' build"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
